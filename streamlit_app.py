@@ -28,9 +28,11 @@ footer {visibility: hidden;}
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Load model from Google Drive
+# Load only TL_model_30epoch from Google Drive
 @st.cache_resource
-def load_model_from_drive(drive_id, filename):
+def load_model():
+    drive_id = "14T6m4berh-Z_WjMFaQ07sQDthquWjkyk"
+    filename = "TL_model_30epoch.keras"
     if not os.path.exists(filename):
         with st.spinner(f"Downloading {filename} from Google Drive..."):
             url = f"https://drive.google.com/uc?id={drive_id}"
@@ -38,31 +40,19 @@ def load_model_from_drive(drive_id, filename):
     model = tf.keras.models.load_model(filename)
     return model
 
-# Model list with Drive IDs
-model_options = {
-    "Transfer Learning E10": ("1832Ni8JfYCZdd-Ov0_JM5ya6zBInPGxK", "TL_model_10epoch.keras"),
-    "Transfer Learning E20": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "TL_model_20epoch.keras"),
-    "Transfer Learning E30": ("14T6m4berh-Z_WjMFaQ07sQDthquWjkyk", "TL_model_30epoch.keras"),
-    "Non-Transfer Learning E10": ("1537M876PlCNR38h8IMUl4q3eHx6qbBFU", "nonTL_model_10epoch.keras"),
-    "Non-Transfer Learning E20": ("1cXfRseyXRWJppuWRBgAX0Xm40Z3mOlvo", "nonTL_model_20epoch.keras"),
-    "Non-Transfer Learning E30": ("1lmb2qKVvAS3CKikGkptWRGRECRhBGLZC", "nonTL_model_30epoch.keras"),
-}
+# Load model
+try:
+    model = load_model()
+    st.sidebar.success("Model (TL 30 Epoch) loaded successfully!")
+except Exception as e:
+    st.sidebar.error("Failed to load model")
+    st.sidebar.error(str(e))
 
+# Sidebar interface
 with st.sidebar:
     st.title("RICE VARIETY CLASSIFICATION")
     st.subheader("DenseNet-201")
-    st.text("Accurate Rice Variety Classifier. It helps users to easily classify rice based on images.")
-
-    selected_model = st.selectbox("Select Classification Model", list(model_options.keys()))
-    drive_id, filename = model_options[selected_model]
-
-    try:
-        model = load_model_from_drive(drive_id, filename)
-        st.success(f"{selected_model} loaded successfully!")
-    except Exception as e:
-        st.error(f"Failed to load {selected_model}")
-        st.error(str(e))
-
+    st.text("Accurate Rice Variety Classifier.\nIt helps users to easily classify rice based on images.")
     img_source = st.radio("Choose image source", ("Upload image", "Sample image"))
 
 st.header("🌾RICE VARIETY CLASSIFICATION")
