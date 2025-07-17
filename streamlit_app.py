@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore")
 st.set_page_config(
     page_title="Rice Variety Classification",
     page_icon="🌾",
-    initial_sidebar_state='expanded'
+    initial_sidebar_state='auto'
 )
 
 # Hide footer & main menu
@@ -41,18 +41,28 @@ def load_model():
 
 model = load_model()
 
-# Menu Sidebar
-st.sidebar.title("📘 Menu Navigasi")
-menu = st.sidebar.radio("Pilih halaman:", [
-    "Introduction", 
-    "Dataset Information", 
-    "Preprocessing", 
-    "Model Training", 
-    "Model Evaluation", 
-    "Prediction"
-])
+# Sidebar Menu
+st.sidebar.title("📋 MENU")
 
-# Kelas & Info
+if "menu" not in st.session_state:
+    st.session_state.menu = "Introduction"
+
+if st.sidebar.button("📖 Introduction"):
+    st.session_state.menu = "Introduction"
+if st.sidebar.button("📂 Dataset Information"):
+    st.session_state.menu = "Dataset Information"
+if st.sidebar.button("🔧 Preprocessing"):
+    st.session_state.menu = "Preprocessing"
+if st.sidebar.button("🧠 Model Training"):
+    st.session_state.menu = "Model Training"
+if st.sidebar.button("📊 Model Evaluation"):
+    st.session_state.menu = "Model Evaluation"
+if st.sidebar.button("🔍 Prediction"):
+    st.session_state.menu = "Prediction"
+
+menu = st.session_state.menu
+
+# Informasi varietas
 class_names = ['ciherang', 'ir64', 'mentik']
 rice_info = {
     "ciherang": "Ciherang adalah varietas unggul yang banyak ditanam di Indonesia.🍚",
@@ -77,85 +87,61 @@ def display_info(predicted_class):
     st.warning(f"{predicted_class.upper()} VARIETY")
     st.write(rice_info[predicted_class])
 
-# Halaman: Introduction
+
+# ================= CONTENT ====================
 if menu == "Introduction":
-    st.header("🌾 RICE VARIETY CLASSIFICATION")
+    st.header("📖 Introduction")
     st.write(
-        "Tahukah anda? biji padi yang kita kenal sebagai beras merupakan sumber karbohidrat utama bagi sebagian besar penduduk dunia. "
-        "Beras tidak hanya menjadi makanan pokok yang menyediakan energi, tetapi juga memiliki peran penting dalam budaya, "
-        "ekonomi, dan ketahanan pangan banyak negara, terutama di Asia."
+        "Selamat datang di aplikasi klasifikasi varietas padi menggunakan Deep Learning.\n\n"
+        "Aplikasi ini dikembangkan dengan arsitektur DenseNet-201 dan memungkinkan pengguna "
+        "mengunggah gambar biji padi untuk mengidentifikasi varietasnya secara otomatis."
     )
 
-# Halaman: Dataset Information
 elif menu == "Dataset Information":
     st.header("📂 Dataset Information")
-    st.write("""
-    Dataset terdiri dari citra biji padi dengan 3 varietas:
-    - **Ciherang**
-    - **IR64**
-    - **Mentik**
+    st.write(
+        "- Dataset terdiri dari tiga varietas: **Ciherang**, **IR64**, dan **Mentik**.\n"
+        "- Jumlah total gambar: 75.000\n"
+        "- Sumber citra: Hasil foto dan data publik.\n"
+        "- Resolusi gambar: 224x224 pixel (setelah preprocessing)"
+    )
 
-    Total gambar: ~75.000 citra (setelah augmentasi dihilangkan).  
-    Ukuran gambar: 224x224 piksel  
-    Format: JPG / PNG  
-    """)
-    st.image("Images/sample_dataset.png", caption="Contoh dataset (jika tersedia)", use_container_width=True)
-
-# Halaman: Preprocessing
 elif menu == "Preprocessing":
-    st.header("🧪 Preprocessing")
-    st.markdown("""
-    Tahapan preprocessing meliputi:
-    1. **Penghapusan latar belakang** menggunakan `rembg`
-    2. **Konversi ke grayscale**
-    3. **CLAHE** untuk meningkatkan kontras
-    4. **Cropping** menggunakan thresholding dan contour detection
-    5. **Normalisasi piksel**
-    6. **Resize ke 224x224**
+    st.header("🔧 Preprocessing")
+    st.write(
+        "Tahapan preprocessing meliputi:\n"
+        "1. Penghapusan latar belakang dengan `rembg`\n"
+        "2. Konversi ke grayscale\n"
+        "3. Peningkatan kontras menggunakan CLAHE\n"
+        "4. Cropping otomatis tiap biji padi\n"
+        "5. Normalisasi piksel dan resize ke 224x224"
+    )
 
-    Semua tahapan ini dilakukan sebelum data dimasukkan ke model untuk training maupun inference.
-    """)
-
-# Halaman: Model Training
 elif menu == "Model Training":
     st.header("🧠 Model Training")
-    st.markdown("""
-    Model yang digunakan: **DenseNet-201** dengan pendekatan **Transfer Learning**.
+    st.write(
+        "- Model: DenseNet-201\n"
+        "- Teknik: Transfer Learning\n"
+        "- Epochs: 30\n"
+        "- Optimizer: Adam, Learning Rate: 0.001\n"
+        "- Loss: Categorical Crossentropy\n"
+        "- Batch Size: 32"
+    )
 
-    - Optimizer: Adam  
-    - Learning Rate: 0.001  
-    - Batch Size: 32  
-    - Jumlah Epoch: 30  
-    - Layer tambahan: Global Average Pooling + Dense Layer (softmax)
-
-    Dataset dibagi menjadi:  
-    - Train set: 70%  
-    - Validation set: 15%  
-    - Test set: 15%
-    """)
-
-# Halaman: Model Evaluation
 elif menu == "Model Evaluation":
     st.header("📊 Model Evaluation")
-    st.markdown("""
-    Evaluasi dilakukan menggunakan metrik:
-    - **Accuracy**
-    - **Precision**
-    - **Recall**
-    - **F1-Score**
-    - **Confusion Matrix**
+    st.write(
+        "- Akurasi Uji: **99.94%**\n"
+        "- Metrik evaluasi:\n"
+        "  - Precision, Recall, dan F1-Score\n"
+        "- Model menunjukkan performa tinggi pada semua kelas varietas"
+    )
 
-    Hasil terbaik:
-    - Accuracy: **99.94%** (Transfer Learning)
-    - Performa meningkat signifikan dibanding model tanpa transfer learning.
-    """)
-    st.image("Images/confusion_matrix.png", caption="Confusion Matrix", use_container_width=True)
-
-# Halaman: Prediction
 elif menu == "Prediction":
-    st.header("🔍 Prediction Page")
-    file = st.file_uploader("Upload an image file...", type=["jpg", "png"])
+    st.header("🔍 Prediction")
+    st.write("Silakan unggah gambar biji padi di bawah ini:")
 
+    file = st.file_uploader("Upload an image file...", type=["jpg", "png"])
     if file is None:
         st.text("Please upload an image file")
     else:
@@ -186,6 +172,7 @@ elif menu == "Prediction":
                 pred_class = class_names[np.argmax(predictions)]
                 
                 st.sidebar.header("🔎 RESULT")
+                st.sidebar.success("✅ Classification Completed")
                 st.sidebar.warning(f"Variety: {pred_class.upper()}")
                 st.sidebar.info(f"Confidence: {confidence:.2f}%")
                 st.markdown("### 💡Information")
@@ -223,6 +210,7 @@ elif menu == "Prediction":
 
                 st.image(cv2.cvtColor(draw_img, cv2.COLOR_BGR2RGB), caption="Classification Result", use_container_width=True)
                 st.sidebar.header("🔎 SUMMARY")
+                st.sidebar.success("✅ Classification Completed")
                 st.sidebar.markdown(f"Total classified: {sum(variety_counter.values())} grain(s)")
                 for variety, total in variety_counter.items():
                     st.sidebar.markdown(f"{variety.upper()}: {total} grain(s)")
