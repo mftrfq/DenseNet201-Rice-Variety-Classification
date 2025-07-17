@@ -41,28 +41,19 @@ def load_model():
 
 model = load_model()
 
-# Sidebar Menu
-st.sidebar.title("📋 MENU")
+with st.sidebar:
+    st.title("RICE VARIETY CLASSIFICATION")
+    st.subheader("DenseNet-201")
+    st.text("Accurate Rice Variety Classifier. It helps users to easily classify rice based on images.")
+    img_source = st.radio("Choose image source", ("Upload image", "Sample image"))
 
-if "menu" not in st.session_state:
-    st.session_state.menu = "Introduction"
+st.header("🌾RICE VARIETY CLASSIFICATION")
+st.write(
+    "Tahukah anda? biji padi yang kita kenal sebagai beras merupakan sumber karbohidrat utama bagi sebagian besar penduduk dunia. "
+    "Beras tidak hanya menjadi makanan pokok yang menyediakan energi, tetapi juga memiliki peran penting dalam budaya, "
+    "ekonomi, dan ketahanan pangan banyak negara, terutama di Asia."
+)
 
-if st.sidebar.button("📖 Introduction"):
-    st.session_state.menu = "Introduction"
-if st.sidebar.button("📂 Dataset Information"):
-    st.session_state.menu = "Dataset Information"
-if st.sidebar.button("🔧 Preprocessing"):
-    st.session_state.menu = "Preprocessing"
-if st.sidebar.button("🧠 Model Training"):
-    st.session_state.menu = "Model Training"
-if st.sidebar.button("📊 Model Evaluation"):
-    st.session_state.menu = "Model Evaluation"
-if st.sidebar.button("🔍 Prediction"):
-    st.session_state.menu = "Prediction"
-
-menu = st.session_state.menu
-
-# Informasi varietas
 class_names = ['ciherang', 'ir64', 'mentik']
 rice_info = {
     "ciherang": "Ciherang adalah varietas unggul yang banyak ditanam di Indonesia.🍚",
@@ -87,60 +78,52 @@ def display_info(predicted_class):
     st.warning(f"{predicted_class.upper()} VARIETY")
     st.write(rice_info[predicted_class])
 
+sample_images = {
+    "Ciherang": [
+        r'Images/sampel ciherang_1.png',
+        r'Images/sampel ciherang_2.png',
+        r'Images/sampel ciherang_3.png'
+    ],
+    "IR64": [
+        r'Images/sampel ir64_1.png',
+        r'Images/sampel ir64_2.png',
+        r'Images/sampel ir64_3.png'
+    ],
+    "Mentik": [
+        r'Images/sampel mentik_1.png',
+        r'Images/sampel mentik_2.png',
+        r'Images/sampel mentik_3.png'
+    ]
+}
 
-# ================= CONTENT ====================
-if menu == "Introduction":
-    st.header("📖 Introduction")
-    st.write(
-        "Selamat datang di aplikasi klasifikasi varietas padi menggunakan Deep Learning.\n\n"
-        "Aplikasi ini dikembangkan dengan arsitektur DenseNet-201 dan memungkinkan pengguna "
-        "mengunggah gambar biji padi untuk mengidentifikasi varietasnya secara otomatis."
-    )
+if img_source == "Sample image":
+    st.sidebar.header("Select a class")
+    selected_class = st.sidebar.selectbox("Rice Variety", list(sample_images.keys()))
+    st.header(f"Sample of {selected_class} images")
+    columns = st.columns(3)
+    selected_image = None
+    for i, image_path in enumerate(sample_images[selected_class]):
+        with columns[i % 3]:
+            image = Image.open(image_path)
+            st.image(image, caption=f"Sample {i + 1}", use_container_width=True)
+            if st.button(f"Select Sample {i + 1}", key=image_path):
+                selected_image = image_path
 
-elif menu == "Dataset Information":
-    st.header("📂 Dataset Information")
-    st.write(
-        "- Dataset terdiri dari tiga varietas: **Ciherang**, **IR64**, dan **Mentik**.\n"
-        "- Jumlah total gambar: 75.000\n"
-        "- Sumber citra: Hasil foto dan data publik.\n"
-        "- Resolusi gambar: 224x224 pixel (setelah preprocessing)"
-    )
+    if selected_image:
+        image = Image.open(selected_image).convert('RGB')
+        st.image(image, caption=selected_image, use_container_width=True)
+        predictions = import_and_predict(image, model)
+        confidence = np.max(predictions) * 100
+        pred_class = class_names[np.argmax(predictions)]
+        st.sidebar.header("🔎RESULT")
+        st.sidebar.warning(f"Identified variety : {pred_class.upper()}")
+        st.sidebar.info(f"Confidence score : {confidence:.2f}%")
+        st.markdown("### 💡Information")
+        display_info(pred_class)
+    else:
+        st.info("Select an image for prediction")
 
-elif menu == "Preprocessing":
-    st.header("🔧 Preprocessing")
-    st.write(
-        "Tahapan preprocessing meliputi:\n"
-        "1. Penghapusan latar belakang dengan `rembg`\n"
-        "2. Konversi ke grayscale\n"
-        "3. Peningkatan kontras menggunakan CLAHE\n"
-        "4. Cropping otomatis tiap biji padi\n"
-        "5. Normalisasi piksel dan resize ke 224x224"
-    )
-
-elif menu == "Model Training":
-    st.header("🧠 Model Training")
-    st.write(
-        "- Model: DenseNet-201\n"
-        "- Teknik: Transfer Learning\n"
-        "- Epochs: 30\n"
-        "- Optimizer: Adam, Learning Rate: 0.001\n"
-        "- Loss: Categorical Crossentropy\n"
-        "- Batch Size: 32"
-    )
-
-elif menu == "Model Evaluation":
-    st.header("📊 Model Evaluation")
-    st.write(
-        "- Akurasi Uji: **99.94%**\n"
-        "- Metrik evaluasi:\n"
-        "  - Precision, Recall, dan F1-Score\n"
-        "- Model menunjukkan performa tinggi pada semua kelas varietas"
-    )
-
-elif menu == "Prediction":
-    st.header("🔍 Prediction")
-    st.write("Silakan unggah gambar biji padi di bawah ini:")
-
+else:
     file = st.file_uploader("Upload an image file...", type=["jpg", "png"])
     if file is None:
         st.text("Please upload an image file")
