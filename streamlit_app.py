@@ -194,9 +194,9 @@ else:
                 st.image(cv2.cvtColor(draw_img, cv2.COLOR_BGR2RGB), caption="Classification Result", use_container_width=True)
                 st.sidebar.header("🔎 SUMMARY")
                 st.sidebar.success("✅ Classification Completed")
-                st.sidebar.info(f"Total classified: {sum(variety_counter.values())} grain(s)")
+                st.sidebar(f"Total classified: {sum(variety_counter.values())} grain(s)")
                 for variety, total in variety_counter.items():
-                    st.sidebar.warning(f"{variety.upper()}: {total} grain(s)")
+                    st.sidebar(f"{variety.upper()}: {total} grain(s)")
 
         except Exception as e:
             st.error("Error processing the image. Please try again with a valid image file.")
