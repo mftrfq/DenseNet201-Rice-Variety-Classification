@@ -8,3 +8,4 @@ streamlit==1.45.1
 tensorflow==2.19.0
 rembg==2.0.66
 onnxruntime==1.22.0
+gdown
