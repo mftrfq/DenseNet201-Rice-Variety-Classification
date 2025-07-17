@@ -153,13 +153,11 @@ else:
                 predictions = import_and_predict(image, model)
                 confidence = np.max(predictions) * 100
                 pred_class = class_names[np.argmax(predictions)]
-                # st.sidebar.header("🔎RESULT")
-                # st.sidebar.warning(f"Identified variety : {pred_class.upper()}")
-                # st.sidebar.info(f"Confidence score : {confidence:.2f}%")
+                
                 st.sidebar.header("🔎 RESULT")
                 st.sidebar.success("✅ Classification Completed")
-                st.sidebar.warning(f"📌 Variety: {pred_class.upper()}")
-                st.sidebar.info(f"🎯 Confidence: {confidence:.2f}%")
+                st.sidebar.warning(f"Variety: {pred_class.upper()}")
+                st.sidebar.info(f"Confidence: {confidence:.2f}%")
                 st.markdown("### 💡Information")
                 display_info(pred_class)
             else:
@@ -194,16 +192,11 @@ else:
                     variety_counter[label] += 1
 
                 st.image(cv2.cvtColor(draw_img, cv2.COLOR_BGR2RGB), caption="Classification Result", use_container_width=True)
-                # st.sidebar.header("🔎SUMMARY")
-                # for variety, total in variety_counter.items():
-                #     st.sidebar.write(f"{variety.upper()}: {total} grain(s)")
-                # st.sidebar.success(f"Total classified: {sum(variety_counter.values())} grain(s)")
                 st.sidebar.header("🔎 SUMMARY")
-                st.sidebar.success("✅ Multi-Grain Classification Completed")
+                st.sidebar.success("✅ Classification Completed")
+                st.sidebar.info(f"Total classified: {sum(variety_counter.values())} grain(s)")
                 for variety, total in variety_counter.items():
                     st.sidebar.warning(f"{variety.upper()}: {total} grain(s)")
-                st.sidebar.info(f"🧮 Total classified: {sum(variety_counter.values())} grain(s)")
-
 
         except Exception as e:
             st.error("Error processing the image. Please try again with a valid image file.")
