@@ -43,10 +43,10 @@ def load_model_from_drive(drive_id, filename):
 model_options = {
     "Transfer Learning E10": ("1832Ni8JfYCZdd-Ov0_JM5ya6zBInPGxK", "TL_model_10epoch.keras"),
     "Transfer Learning E20": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "TL_model_20epoch.keras"),
-    "Transfer Learning E30": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "TL_model_30epoch.keras"),
-    "Non-Transfer Learning E10": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "nonTL_model_10epoch.keras"),
-    "Non-Transfer Learning E20": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "nonTL_model_20epoch.keras"),
-    "Non-Transfer Learning E30": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "nonTL_model_30epoch.keras"),
+    "Transfer Learning E30": ("14T6m4berh-Z_WjMFaQ07sQDthquWjkyk", "TL_model_30epoch.keras"),
+    "Non-Transfer Learning E10": ("1537M876PlCNR38h8IMUl4q3eHx6qbBFU", "nonTL_model_10epoch.keras"),
+    "Non-Transfer Learning E20": ("1cXfRseyXRWJppuWRBgAX0Xm40Z3mOlvo", "nonTL_model_20epoch.keras"),
+    "Non-Transfer Learning E30": ("1lmb2qKVvAS3CKikGkptWRGRECRhBGLZC", "nonTL_model_30epoch.keras"),
 }
 # Ganti ID di atas dengan ID asli file di Google Drive kamu
 
