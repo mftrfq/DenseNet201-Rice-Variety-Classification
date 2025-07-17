@@ -28,23 +28,23 @@ footer {visibility: hidden;}
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Load only TL_model_30epoch from Google Drive
+# Load fixed model from Google Drive
 @st.cache_resource
 def load_model():
     drive_id = "14T6m4berh-Z_WjMFaQ07sQDthquWjkyk"
     filename = "TL_model_30epoch.keras"
     if not os.path.exists(filename):
-        with st.spinner(f"Downloading {filename} from Google Drive..."):
-            url = f"https://drive.google.com/uc?id={drive_id}"
-            gdown.download(url, filename, quiet=False)
+        url = f"https://drive.google.com/uc?id={drive_id}"
+        gdown.download(url, filename, quiet=False)
     model = tf.keras.models.load_model(filename)
     return model
 
-# Sidebar interface
+model = load_model()
+
 with st.sidebar:
     st.title("RICE VARIETY CLASSIFICATION")
     st.subheader("DenseNet-201")
-    st.text("Accurate Rice Variety Classifier.\nIt helps users to easily classify rice based on images.")
+    st.text("Accurate Rice Variety Classifier. It helps users to easily classify rice based on images.")
     img_source = st.radio("Choose image source", ("Upload image", "Sample image"))
 
 st.header("🌾RICE VARIETY CLASSIFICATION")
