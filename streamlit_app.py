@@ -13,7 +13,6 @@ import gdown
 
 warnings.filterwarnings("ignore")
 
-# Set page config
 st.set_page_config(
     page_title="Rice Variety Classification",
     page_icon="🌾",
@@ -48,9 +47,7 @@ model_options = {
     "Non-Transfer Learning E20": ("1cXfRseyXRWJppuWRBgAX0Xm40Z3mOlvo", "nonTL_model_20epoch.keras"),
     "Non-Transfer Learning E30": ("1lmb2qKVvAS3CKikGkptWRGRECRhBGLZC", "nonTL_model_30epoch.keras"),
 }
-# Ganti ID di atas dengan ID asli file di Google Drive kamu
 
-# Sidebar
 with st.sidebar:
     st.title("RICE VARIETY CLASSIFICATION")
     st.subheader("DenseNet-201")
@@ -68,7 +65,6 @@ with st.sidebar:
 
     img_source = st.radio("Choose image source", ("Upload image", "Sample image"))
 
-# Headline
 st.header("🌾RICE VARIETY CLASSIFICATION")
 st.write(
     "Tahukah anda? biji padi yang kita kenal sebagai beras merupakan sumber karbohidrat utama bagi sebagian besar penduduk dunia. "
@@ -76,7 +72,6 @@ st.write(
     "ekonomi, dan ketahanan pangan banyak negara, terutama di Asia."
 )
 
-# Classes and Info
 class_names = ['ciherang', 'ir64', 'mentik']
 rice_info = {
     "ciherang": "Ciherang adalah varietas unggul yang banyak ditanam di Indonesia.🍚",
@@ -89,7 +84,6 @@ label_colors = {
     'mentik': (0, 255, 0),
 }
 
-# Prediction function
 def import_and_predict(image_data, model):
     size = (224, 224)
     image = ImageOps.fit(image_data, size, Image.Resampling.LANCZOS)
@@ -98,12 +92,10 @@ def import_and_predict(image_data, model):
     prediction = model.predict(img_reshape, verbose=0)
     return prediction
 
-# Show variety info
 def display_info(predicted_class):
     st.warning(f"{predicted_class.upper()} VARIETY")
     st.write(rice_info[predicted_class])
 
-# Sample images
 sample_images = {
     "Ciherang": [
         r'Images/sampel ciherang_1.png',
@@ -122,7 +114,6 @@ sample_images = {
     ]
 }
 
-# Image Selection Logic
 if img_source == "Sample image":
     st.sidebar.header("Select a class")
     selected_class = st.sidebar.selectbox("Rice Variety", list(sample_images.keys()))
@@ -166,7 +157,7 @@ else:
             img_no_bg = Image.open(BytesIO(output_bytes)).convert("RGB")
             img_np = np.array(img_no_bg)
 
-            gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+            gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
             _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary, connectivity=8)
 
@@ -191,19 +182,13 @@ else:
                 variety_counter = Counter()
 
                 for i in range(1, num_labels):
-                    area = stats[i, cv2.CC_STAT_AREA]
+                    x, y, w, h, area = stats[i]
+                    cx, cy = centroids[i]
                     if area < 300:
                         continue
 
-                    x = stats[i, cv2.CC_STAT_LEFT]
-                    y = stats[i, cv2.CC_STAT_TOP]
-                    w = stats[i, cv2.CC_STAT_WIDTH]
-                    h = stats[i, cv2.CC_STAT_HEIGHT]
-                    cx, cy = centroids[i]
-
                     side = int(max(w, h) * 1.5)
-                    cx_int = int(cx)
-                    cy_int = int(cy)
+                    cx_int, cy_int = int(cx), int(cy)
                     x1 = max(0, cx_int - side // 2)
                     y1 = max(0, cy_int - side // 2)
                     side = min(side, min(img_np.shape[1] - x1, img_np.shape[0] - y1))
@@ -219,7 +204,7 @@ else:
 
                     cv2.rectangle(draw_img, (x1, y1), (x1 + side, y1 + side), color, 2)
                     cv2.putText(draw_img, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX,
-                                fontScale=0.8, color=color, thickness=2)
+                                fontScale=1.2, color=color, thickness=2)
                     variety_counter[label] += 1
 
                 st.image(cv2.cvtColor(draw_img, cv2.COLOR_BGR2RGB), caption="Classification Result", use_container_width=True)
