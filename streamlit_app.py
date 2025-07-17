@@ -40,14 +40,6 @@ def load_model():
     model = tf.keras.models.load_model(filename)
     return model
 
-# Load model
-try:
-    model = load_model()
-    st.sidebar.success("Model (TL 30 Epoch) loaded successfully!")
-except Exception as e:
-    st.sidebar.error("Failed to load model")
-    st.sidebar.error(str(e))
-
 # Sidebar interface
 with st.sidebar:
     st.title("RICE VARIETY CLASSIFICATION")
