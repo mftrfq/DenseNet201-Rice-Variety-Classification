@@ -41,12 +41,12 @@ def load_model_from_drive(drive_id, filename):
 
 # Model list with Drive IDs
 model_options = {
-    "Transfer Learning E10": ("1AbcTL10xxxxxxxxxxxxxxxxxxxxxxxx", "TL_model_10epoch.keras"),
-    "Transfer Learning E20": ("1AbcTL20xxxxxxxxxxxxxxxxxxxxxxxx", "TL_model_20epoch.keras"),
-    "Transfer Learning E30": ("1AbcTL30xxxxxxxxxxxxxxxxxxxxxxxx", "TL_model_30epoch.keras"),
-    "Non-Transfer Learning E10": ("1AbcNonTL10xxxxxxxxxxxxxxxxxxxx", "nonTL_model_10epoch.keras"),
-    "Non-Transfer Learning E20": ("1AbcNonTL20xxxxxxxxxxxxxxxxxxxx", "nonTL_model_20epoch.keras"),
-    "Non-Transfer Learning E30": ("1AbcNonTL30xxxxxxxxxxxxxxxxxxxx", "nonTL_model_30epoch.keras"),
+    "Transfer Learning E10": ("1832Ni8JfYCZdd-Ov0_JM5ya6zBInPGxK", "TL_model_10epoch.keras"),
+    "Transfer Learning E20": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "TL_model_20epoch.keras"),
+    "Transfer Learning E30": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "TL_model_30epoch.keras"),
+    "Non-Transfer Learning E10": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "nonTL_model_10epoch.keras"),
+    "Non-Transfer Learning E20": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "nonTL_model_20epoch.keras"),
+    "Non-Transfer Learning E30": ("1iddWshBpw4Mwsvaea3-vU1SGFgf27rnd", "nonTL_model_30epoch.keras"),
 }
 # Ganti ID di atas dengan ID asli file di Google Drive kamu
 
